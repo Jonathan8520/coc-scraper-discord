@@ -31,11 +31,18 @@ def notify_discord(item):
 
 
 def load_seen():
-    if not os.path.exists("seen.json"):
+    if not os.path.exists("seen.json") or os.path.getsize("seen.json") == 0:
         return set()
 
-    with open("seen.json", "r") as f:
-        return set(json.load(f))
+    try:
+        with open("seen.json", "r") as f:
+            data = json.load(f)
+    except json.JSONDecodeError:
+        return set()
+
+    if isinstance(data, list):
+        return set(data)
+    return set()
 
 
 def save_seen(seen):
