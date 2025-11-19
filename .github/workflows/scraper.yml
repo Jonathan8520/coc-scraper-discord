@@ -2,7 +2,7 @@ name: Scrape Clash of Clans Codes
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # toutes les 5 minutes
+    - cron: '*/1 * * * *' # toutes les 1 minute
   workflow_dispatch:    # permet de lancer manuellement
 
 jobs:
