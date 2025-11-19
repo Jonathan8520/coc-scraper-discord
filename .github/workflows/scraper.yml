@@ -2,7 +2,7 @@ name: Scrape Clash of Clans Codes
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # toutes les 5 minutes
+    - cron: '0 12 * * 1' # tous les lundi à midi (UTC)
   workflow_dispatch:    # permet de lancer manuellement
 
 jobs:
@@ -10,24 +10,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout du repo
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      # Setup Python
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
+      # Installer les dépendances
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # Lancer le scraper
       - name: Run scraper
         env:
           DISCORD_WEBHOOK_COC: ${{ secrets.DISCORD_WEBHOOK_COC }}
         run: python scraper.py
 
-      - name: Save updated seen.json
+      # Commit et push de seen.json automatiquement
+      - name: Auto commit changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update seen.json"
           file_pattern: seen.json
+          commit_user_name: github-actions[bot]
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          push: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
